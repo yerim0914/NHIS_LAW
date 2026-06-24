@@ -76,6 +76,61 @@ D:\Source\NHIS_LAW\build\web
 
 iOS `.ipa`는 Windows에서 만들 수 없습니다. macOS, Xcode, Apple Developer 계정이 필요합니다. 현재 아이폰 확인용으로는 Flutter Web/PWA 배포가 현실적인 경로입니다.
 
+## iOS 설치 파일 배포
+
+아이폰에 설치 가능한 `.ipa`는 macOS에서 Xcode와 Apple Developer 서명을 사용해 빌드해야 합니다.
+현재 프로젝트의 iOS Bundle ID는 아래 값입니다.
+
+```text
+com.nhis.study.nhisLaw
+```
+
+### 준비물
+
+- Xcode 설치
+- Flutter SDK 설치 및 `flutter` PATH 설정
+- Apple Developer 계정
+- Xcode `Runner` 타겟의 Signing & Capabilities에서 Team 선택
+
+Xcode 프로젝트 열기:
+
+```bash
+open ios/Runner.xcworkspace
+```
+
+### TestFlight/App Store용 IPA
+
+```bash
+cd /Users/yerim/Documents/Codex/NHIS_LAW
+chmod +x scripts/build_ios_ipa.sh
+scripts/build_ios_ipa.sh app-store
+```
+
+빌드가 성공하면 아래 경로에 `.ipa`가 생성됩니다.
+
+```text
+build/ios/ipa/
+```
+
+생성된 `.ipa`는 Apple Transporter 또는 Xcode Organizer를 통해 App Store Connect에 업로드한 뒤 TestFlight로 배포합니다.
+
+### Ad Hoc 직접 설치용 IPA
+
+Ad Hoc은 설치할 iPhone의 UDID를 Apple Developer 계정에 먼저 등록해야 합니다.
+
+```bash
+cd /Users/yerim/Documents/Codex/NHIS_LAW
+chmod +x scripts/build_ios_ipa.sh
+scripts/build_ios_ipa.sh ad-hoc
+```
+
+Ad Hoc 설치가 실패하면 대부분 아래 중 하나입니다.
+
+- iPhone UDID가 Apple Developer 계정에 등록되지 않음
+- Bundle ID와 provisioning profile이 다름
+- Xcode Signing Team이 선택되지 않음
+- 인증서 또는 provisioning profile 만료
+
 ## 주요 기능
 
 - 홈
