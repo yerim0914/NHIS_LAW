@@ -286,13 +286,61 @@ cd D:\Source\NHIS_LAW
 D:\dev\flutter\bin\flutter.bat build apk
 ```
 
+## Google Play Console 배포
+
+Play Console 업로드용 Android 파일은 APK가 아니라 Android App Bundle인 `.aab`를 사용합니다.
+현재 Android Application ID는 아래 값입니다. Play Console에 앱을 만든 뒤에는 이 값을 바꾸지 않는 것이 좋습니다.
+
+```text
+com.nhis.study.nhis_law
+```
+
+### 업로드 키 생성
+
+처음 한 번만 upload keystore를 만듭니다.
+
+```bash
+cd /Users/yerim/Documents/Codex/NHIS_LAW
+keytool -genkey -v -keystore android/app/upload-keystore.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+```
+
+그 다음 예시 파일을 복사해서 실제 비밀번호를 입력합니다.
+
+```bash
+cp android/key.properties.example android/key.properties
+```
+
+`android/key.properties` 예시:
+
+```properties
+storePassword=키스토어_비밀번호
+keyPassword=키_비밀번호
+keyAlias=upload
+storeFile=app/upload-keystore.jks
+```
+
+주의: `android/key.properties`와 `android/app/upload-keystore.jks`는 배포 서명 비밀 파일이라 Git에 올리지 않습니다.
+
+### Play Console 업로드용 AAB 빌드
+
+```bash
+cd /Users/yerim/Documents/Codex/NHIS_LAW
+scripts/build_android_aab.sh
+```
+
+빌드가 성공하면 아래 파일을 Play Console에 업로드합니다.
+
+```text
+build/app/outputs/bundle/release/app-release.aab
+```
+
 ## 알려진 주의점
 
 - 현재 모든 앱 코드가 `lib/main.dart` 한 파일에 모여 있습니다. 기능이 커졌으므로 다음 작업에서는 `models/`, `repositories/`, `screens/`, `widgets/`로 분리하는 리팩터링이 좋습니다.
 - 퀴즈는 자동 생성 기반이라 실제 시험 품질로 쓰려면 사람이 검수하거나 별도 출제 로직을 더 강화해야 합니다.
 - OX는 일부 조문만 생성됩니다. 애매한 OX는 일부러 삭제하는 정책입니다.
 - 객관식 오답 보기는 아직 완전히 자연스럽지 않을 수 있습니다.
-- Android APK는 debug signing이 아닌 Flutter 기본 release build 산출물이지만, Play Store 배포용 서명 설정은 아직 하지 않았습니다.
+- Play Console 업로드용 Android release signing 설정은 추가되어 있으며, 실제 `android/key.properties`와 upload keystore는 각 배포 환경에서 별도로 생성해야 합니다.
 - 실제 광고 SDK는 붙어 있지 않습니다.
 - iOS 앱 빌드는 macOS/Xcode에서 별도 진행해야 합니다.
 
@@ -304,4 +352,4 @@ D:\dev\flutter\bin\flutter.bat build apk
 4. 오답노트에서 장/법령 필터 추가
 5. 북마크/오답 데이터 export/import
 6. AdMob 연동 시 `AdPlaceholder` 교체
-7. Play Store 배포용 앱 아이콘, 앱 이름, signing 설정
+7. Play Store 배포용 앱 아이콘과 앱 이름 정리
