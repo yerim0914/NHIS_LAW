@@ -33,6 +33,9 @@ migrate_working_dir/
 /build/
 /coverage/
 .tmp/
+.local_home/
+.local_pub_cache/
+.local_sdks/
 
 # Symbolication related
 app.*.symbols
